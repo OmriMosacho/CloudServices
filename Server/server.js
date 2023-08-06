@@ -6,6 +6,8 @@ const app = express();
 
 app.use(cors());
 
+app.use(express.json());
+
 const PORT = process.env.PORT || 4000;
 
 const dbConfig = {
@@ -61,10 +63,14 @@ app.post('/api/todos', async (req, res) => {
   }
 
   try {
-    const [maxIdRow] = await req.app.pool.query('SELECT MAX(ID) AS ID FROM TODOS GROUP BY ID');
-    const maxId = maxIdRow[0].ID;
-    const nextId = maxId + 1;
-    const query = `INSERT INTO todos (id, title, description) VALUES (?, ?, ?)`;
+    const [maxIdRow] = await req.app.pool.query('SELECT ID FROM TODOS ORDER BY ID DESC');
+    var nextId = 0;
+    if (maxIdRow.length !== 0){
+        const maxId = maxIdRow[0].ID;
+        nextId = maxId + 1;
+    }
+
+    const query = `INSERT INTO TODOS (id, title, description) VALUES (?, ?, ?)`;
     await req.app.pool.query(query, [nextId,title, description]);
     res.sendStatus(201); // Created
   } catch (err) {

@@ -6,19 +6,28 @@ const App = () => {
   const [todos, setTodos] = useState([]);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchTodos()
-      .then(() => setLoading(false))
-      .catch(() => setLoading(false));
+    fetchTodos();
   }, []);
-
 
   const fetchTodos = async () => {
     try {
       const response = await axios.get('http://localhost:4000/api/todos');
-      setTodos(response.data);
+
+      // Build a new array of todo objects with the desired structure
+      const newTodos = [];
+      for (let i = 0; i < response.data.length; i++) {
+        const todo = response.data[i];
+        const newTodo = {
+          id: todo.id,
+          title: todo.title,
+          description: todo.description,
+        };
+        newTodos.push(newTodo);
+      }
+
+      setTodos(newTodos);
     } catch (error) {
       console.error('Error fetching todos:', error);
     }
@@ -32,8 +41,7 @@ const App = () => {
     }
 
     try {
-      console.log(title,description);
-      await axios.post('http://localhost:4000/api/todos', { title, description });
+      await axios.post('http://localhost:4000/api/todos', { title, description }, { headers: {'Content-Type': 'application/json'} });
       fetchTodos();
       setTitle('');
       setDescription('');
@@ -42,16 +50,20 @@ const App = () => {
     }
   };
 
-  if(loading){
-    return <div>Loading...</div>
-  }
-
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:4000/api/todos/${id}`);
+      fetchTodos();
+    } catch (error) {
+      console.error('Error deleting todo:', error);
+    }
+  };
 
   return (
     <div>
       <h1>Todo List</h1>
       <form onSubmit={addTodo}>
-      <input
+        <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -71,12 +83,12 @@ const App = () => {
         {todos.map((todo) => (
           <li key={todo.id}>
             <strong>{todo.title}</strong>: {todo.description}
+            <button onClick={() => handleDelete(todo.id)}>X</button>
           </li>
         ))}
       </ul>
     </div>
   );
-
 };
 
 export default App;
