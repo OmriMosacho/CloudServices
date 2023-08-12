@@ -10,15 +10,13 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 4000;
 
+
 const dbConfig = {
-  host: 'final-project.cadad12ytebp.eu-central-1.rds.amazonaws.com',
-  user: 'admin',
-  password: '123456789',
-  database: 'My_DB',
+  host: process.env.DB_HOST,
+  user: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
 };
-
-
-
 
 
 // Create a function to establish a new database connection pool
@@ -31,6 +29,7 @@ async function createConnectionPool() {
     throw err;
   }
 }
+
 
 // Middleware to attach the connection pool to each request
 app.use(async (req, res, next) => {

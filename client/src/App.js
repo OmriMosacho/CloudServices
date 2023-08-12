@@ -7,13 +7,16 @@ const App = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
+const server_ip = "http://3.75.227.44:4000";
+
+
   useEffect(() => {
     fetchTodos();
   }, []);
 
   const fetchTodos = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/todos');
+      const response = await axios.get(server_ip + '/api/todos');
 
       // Build a new array of todo objects with the desired structure
       const newTodos = [];
@@ -41,7 +44,7 @@ const App = () => {
     }
 
     try {
-      await axios.post('http://localhost:4000/api/todos', { title, description }, { headers: {'Content-Type': 'application/json'} });
+      await axios.post(server_ip + '/api/todos', { title, description }, { headers: {'Content-Type': 'application/json'} });
       fetchTodos();
       setTitle('');
       setDescription('');
@@ -52,7 +55,7 @@ const App = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:4000/api/todos/${id}`);
+      await axios.delete(server_ip + `/api/todos/${id}`);
       fetchTodos();
     } catch (error) {
       console.error('Error deleting todo:', error);
