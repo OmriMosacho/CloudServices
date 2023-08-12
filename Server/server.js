@@ -1,6 +1,7 @@
 const express = require('express');
 const mysql = require('mysql2/promise');
 const cors = require('cors'); // Import the cors library
+require('dotenv').config(); // Load .env file
 
 const app = express();
 
@@ -12,10 +13,10 @@ const PORT = process.env.PORT || 4000;
 
 
 const dbConfig = {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  host: 'finalproject.cadad12ytebp.eu-central-1.rds.amazonaws.com',
+  user: 'admin',
+  password: 'Mosacho7!',
+  database: 'FinalProject'
 };
 
 
@@ -110,26 +111,9 @@ app.delete('/api/todos/:id', async (req, res) => {
   }
 });
 
-/*
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-*/
 
-app.listen(PORT, async () => {
-  try {
-    // Check database connection before starting the server
-    const connection = await createConnectionPool();
-    if (connection.config){
-      console.log(connection.config+' Database connection successful.');
-    }else{
-      console.log('Database Cannot Connect.')
-    }
-    // Start the server
-    app.emit('ready');
-    console.log(`Server is running on port ${PORT}`);
-  } catch (err) {
-    console.error('Database connection error. Server not started.');
-  }
-});
 
