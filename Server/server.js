@@ -11,14 +11,6 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 4000;
 
-/*
-const dbConfig = {
-  host: 'finalproject.cadad12ytebp.eu-central-1.rds.amazonaws.com',
-  user: 'admin',
-  password: 'Mosacho7!',
-  database: 'FinalProject'
-};
-*/
 
 const dbConfig = {
   host: process.env.DB_HOST,
