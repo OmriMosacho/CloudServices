@@ -7,7 +7,7 @@ const App = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
-const server_ip = "http://3.75.227.44:4000";
+const server_ip = "http://18.195.28.151:4000";
 
 
   useEffect(() => {
