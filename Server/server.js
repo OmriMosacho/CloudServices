@@ -120,7 +120,7 @@ app.listen(PORT, async () => {
   try {
     // Check database connection before starting the server
     const connection = await createConnectionPool();
-    if (connection){
+    if (connection.config){
       console.log('Database connection successful.');
     }else{
       console.log('Database Cannot Connect.')
