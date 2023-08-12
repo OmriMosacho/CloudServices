@@ -110,8 +110,23 @@ app.delete('/api/todos/:id', async (req, res) => {
   }
 });
 
+/*
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+*/
 
+app.listen(PORT, async () => {
+  try {
+    // Check database connection before starting the server
+    const connection = await createConnectionPool();
+    console.log('Database connection successful.');
+    
+    // Start the server
+    app.emit('ready');
+    console.log(`Server is running on port ${PORT}`);
+  } catch (err) {
+    console.error('Database connection error. Server not started.');
+  }
+});
 
