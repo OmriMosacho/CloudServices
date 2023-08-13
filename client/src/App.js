@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './App.css'; // Import the App.css directly
-require('dotenv').config(); // Load .env file
+import config from './config';
+
+
 
 const App = () => {
   const [todos, setTodos] = useState([]);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
-  const server_ip = process.env.SERVER_IP;
+  const server_ip = config.SERVER_IP;
   // const server_ip = "http://localhost:4000";
 
 
@@ -18,6 +20,7 @@ const App = () => {
 
   const fetchTodos = async () => {
     try {
+      console.log(server_ip);
       const response = await axios.get(server_ip + '/api/todos');
 
       // Build a new array of todo objects with the desired structure
