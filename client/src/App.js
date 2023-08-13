@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './App.css'; // Import the App.css directly
+require('dotenv').config({ path: '../.env' }); // Load .env file
 
 const App = () => {
   const [todos, setTodos] = useState([]);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
-  const server_ip = "http://18.195.28.151:4000";
+  const server_ip = process.env.SERVER_IP;
   //const server_ip = "http://localhost:4000";
 
 

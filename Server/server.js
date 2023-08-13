@@ -1,7 +1,7 @@
 const express = require('express');
 const mysql = require('mysql2/promise');
 const cors = require('cors'); // Import the cors library
-require('dotenv').config(); // Load .env file
+require('dotenv').config({ path: '../.env' }); // Load .env file
 
 const app = express();
 
