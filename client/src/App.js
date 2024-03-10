@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import EasyEdit, { Types } from "react-easy-edit";
 import axios from 'axios';
 import './App.css'; // Import the App.css directly
-import config from './config';
+//import config from './config';
 
 
 
@@ -9,18 +10,21 @@ const App = () => {
   const [todos, setTodos] = useState([]);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [inEditMode,changeToEditMode] = useState(false);
 
-  const server_ip = config.SERVER_IP;
-  // const server_ip = "http://localhost:4000";
-
+  //const server_ip = config.SERVER_IP;
+  const server_ip = "http://localhost:4000";
 
   useEffect(() => {
     fetchTodos();
   }, []);
 
+  const reloadComponent = async () => {
+    window.location.reload(false);
+  }
+
   const fetchTodos = async () => {
     try {
-      console.log(server_ip);
       const response = await axios.get(server_ip + '/api/todos');
 
       // Build a new array of todo objects with the desired structure
@@ -37,7 +41,7 @@ const App = () => {
 
       setTodos(newTodos);
     } catch (error) {
-      console.error('Error fetching todos:', error);
+      console.error('Error fetching todos: ', error);
     }
   };
 
@@ -67,10 +71,26 @@ const App = () => {
     }
   };
 
+  const handleChangeDescription = async (id,description) =>{
+    try{
+      if (description === ''){
+        alert('Description are required'); 
+        reloadComponent();
+      }
+      else await axios.put(server_ip + `/api/todos/update`, { id, description });
+
+      fetchTodos();
+      changeToEditMode(!inEditMode);
+    }catch (error) {
+      console.error('Error updating todo:', error);
+    }
+  }
+
+
   return (
     <div>
       <h1>Todo List</h1>
-      <form onSubmit={addTodo}>
+      <form onSubmit={addTodo} >
         <input
           type="text"
           value={title}
@@ -84,14 +104,24 @@ const App = () => {
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Description"
           required
+          onMouseEnter={(e)=>console.log("Hover description")}
         />
         <button type="submit">Add Task</button>
       </form>
-      <ul>
+      <ul >
         {todos.map((todo) => (
           <li key={todo.id}>
-            <strong>{todo.title}</strong>: {todo.description}
-            <button onClick={() => handleDelete(todo.id)}>X</button>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <strong>{todo.title}: </strong>     
+                <EasyEdit 
+                type={Types.TEXT}
+                onSave={(newDesc) => {handleChangeDescription(todo.id,newDesc);}}
+                allowedit={inEditMode}
+                value={todo.description}
+                onCancel={() => changeToEditMode(!inEditMode)} > 
+                </EasyEdit>
+                <button onClick={() => handleDelete(todo.id)} style={{margin: 10}}>Delete</button>
+            </div>
           </li>
         ))}
       </ul>
@@ -100,3 +130,12 @@ const App = () => {
 };
 
 export default App;
+/*
+<EasyEdit type={Types.TEXT}
+                                            onSave={() => {
+                                            setDescription(value);
+                                            }}
+                                          editMode={inEditMode}
+                                          value={todo.description}>
+                                          </EasyEdit>
+*/

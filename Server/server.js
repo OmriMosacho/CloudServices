@@ -1,7 +1,7 @@
 const express = require('express');
 const mysql = require('mysql2/promise');
-const cors = require('cors'); // Import the cors library
-require('dotenv').config(); // Load .env file
+const cors = require('cors');
+require('dotenv').config(); 
 
 const app = express();
 
@@ -20,19 +20,17 @@ const dbConfig = {
 };
 
 
-// Create a function to establish a new database connection pool
 async function createConnectionPool() {
   try {
-    const pool = mysql.createPool(dbConfig);
+    const pool = mysql.createPool(dbConfig,connectionLimit = 0);
     return pool;
   } catch (err) {
-    console.error('Failed to create connection pool:', err);
+    console.error('Failed to create connection pool: ', err);
     throw err;
   }
 }
 
 
-// Middleware to attach the connection pool to each request
 app.use(async (req, res, next) => {
   try {
     if (!req.app.pool) {
@@ -44,7 +42,7 @@ app.use(async (req, res, next) => {
   }
 });
 
-// Endpoint to get all todo items
+
 app.get('/api/todos', async (req, res) => {
   try {
     const [rows] = await req.app.pool.query('SELECT * FROM TODOS');
@@ -55,7 +53,7 @@ app.get('/api/todos', async (req, res) => {
   }
 });
 
-// Endpoint to add a new todo item
+
 app.post('/api/todos', async (req, res) => {
   const { title, description } = req.body;
   if (!title || !description) {
@@ -72,32 +70,28 @@ app.post('/api/todos', async (req, res) => {
 
     const query = `INSERT INTO TODOS (id, title, description) VALUES (?, ?, ?)`;
     await req.app.pool.query(query, [nextId,title, description]);
-    res.sendStatus(201); // Created
+    res.sendStatus(200); 
   } catch (err) {
     console.error('Error executing query:', err);
     res.status(500).json({ error: 'An error occurred' });
   }
 });
 
-// Endpoint to update a todo item
-app.put('/api/todos/:id', async (req, res) => {
-  const { id } = req.params;
-  const { title, description } = req.body;
-  if (!title || !description) {
-    return res.status(400).json({ error: 'Title and description are required' });
-  }
 
+
+app.put('/api/todos/update', async (req, res) => {
+  const { id, description } = req.body;
   try {
-    const query = `UPDATE TODOS SET title = ?, description = ? WHERE id = ?`;
-    await req.app.pool.query(query, [title, description, id]);
-    res.sendStatus(200); // OK
+    const query = `UPDATE TODOS SET description = ? WHERE id = ?`;
+    await req.app.pool.query(query, [description, id]);
+    res.sendStatus(200); 
   } catch (err) {
     console.error('Error executing query:', err);
     res.status(500).json({ error: 'An error occurred' });
   }
 });
 
-// Endpoint to delete a todo item
+
 app.delete('/api/todos/:id', async (req, res) => {
   const { id } = req.params;
 
