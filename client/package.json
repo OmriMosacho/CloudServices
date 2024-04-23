@@ -7,6 +7,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.4.0",
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "editmode-react": "^3.1.36",
     "os-browserify": "^0.3.0",
@@ -14,7 +15,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-easy-edit": "^1.17.2",
-    "react-scripts": "^3.0.1",
+    "react-scripts": "^5.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -40,9 +41,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@babel/preset-env": "^7.24.0",
-    "babel-jest": "^29.7.0"
   }
 }
